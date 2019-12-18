@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		488FE29C200BC8A100E05AB0 /* RNPMediaLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 488FE29B200BC8A100E05AB0 /* RNPMediaLibrary.m */; };
 		669581F71FE4416B008596CD /* RCTConvert+RNPStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 669581F41FE4416B008596CD /* RCTConvert+RNPStatus.m */; };
 		669581F81FE4416B008596CD /* ReactNativePermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 669581F51FE4416B008596CD /* ReactNativePermissions.m */; };
 		669582121FE441A8008596CD /* RNPPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 669582031FE441A7008596CD /* RNPPhoto.m */; };
@@ -27,8 +26,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		488FE29B200BC8A100E05AB0 /* RNPMediaLibrary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNPMediaLibrary.m; sourceTree = "<group>"; };
-		488FE29D200BC8D200E05AB0 /* RNPMediaLibrary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNPMediaLibrary.h; sourceTree = "<group>"; };
 		669581F31FE4416B008596CD /* ReactNativePermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactNativePermissions.h; sourceTree = "<group>"; };
 		669581F41FE4416B008596CD /* RCTConvert+RNPStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+RNPStatus.m"; sourceTree = "<group>"; };
 		669581F51FE4416B008596CD /* ReactNativePermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactNativePermissions.m; sourceTree = "<group>"; };
@@ -63,8 +60,6 @@
 			children = (
 				669582041FE441A7008596CD /* RNPAudioVideo.h */,
 				669582071FE441A7008596CD /* RNPAudioVideo.m */,
-				488FE29D200BC8D200E05AB0 /* RNPMediaLibrary.h */,
-				488FE29B200BC8A100E05AB0 /* RNPMediaLibrary.m */,
 				669581FC1FE441A7008596CD /* RNPPhoto.h */,
 				669582031FE441A7008596CD /* RNPPhoto.m */,
 			);
@@ -149,7 +144,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				488FE29C200BC8A100E05AB0 /* RNPMediaLibrary.m in Sources */,
 				669581F71FE4416B008596CD /* RCTConvert+RNPStatus.m in Sources */,
 				669582131FE441A8008596CD /* RNPAudioVideo.m in Sources */,
 				669581F81FE4416B008596CD /* ReactNativePermissions.m in Sources */,
