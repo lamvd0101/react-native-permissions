@@ -1,5 +1,4 @@
 // @flow
-
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const NativeModule = NativeModules.ReactNativePermissions;
@@ -77,9 +76,7 @@ class ReactNativePermissions {
   }
 
   openSettings(): Promise<void> {
-    return Platform.OS === 'ios'
-      ? NativeModule.openSettings()
-      : Promise.reject(new Error("'openSettings' is deprecated on android"));
+    return NativeModule.openSettings();
   }
 
   getTypes(): string[] {
@@ -130,6 +127,18 @@ class ReactNativePermissions {
 
     return Promise.resolve('restricted');
   };
+
+  checkNotifications = (): Promise<PermissionStatus> => {
+    if (Platform.OS === 'ios') {
+      return NativeModule.getPermissionStatus('notification', IOS_DEFAULT_OPTIONS.notification);
+    }
+
+    if (Platform.OS === 'android') {
+      return NativeModule.checkNotifications();
+    }
+
+    return Promise.resolve('restricted');
+  }
 
   request = (
     permission: string,

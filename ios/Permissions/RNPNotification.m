@@ -1,0 +1,46 @@
+//
+//  RNPNotification.m
+//  ReactNativePermissions
+//
+//  Created by Yonah Forst on 11/07/16.
+//  Copyright © 2016 Yonah Forst. All rights reserved.
+//
+
+#import "RNPNotification.h"
+
+static NSString* RNPDidAskForNotification = @"RNPDidAskForNotification";
+
+@interface RNPNotification()
+@property (copy) void (^completionHandler)(NSString*);
+@end
+
+@implementation RNPNotification
+
++ (NSString *)getStatus
+{
+    BOOL didAskForPermission = [[NSUserDefaults standardUserDefaults] boolForKey:RNPDidAskForNotification];
+    BOOL isEnabled = [[[UIApplication sharedApplication] currentUserNotificationSettings] types] != UIUserNotificationTypeNone;
+
+    if (isEnabled) {
+        return RNPStatusGranted;
+    } else {
+        return didAskForPermission ? RNPStatusDenied : RNPStatusUndetermined;
+    }
+}
+
+- (void)applicationDidBecomeActive
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationDidBecomeActiveNotification
+                                                  object:nil];
+
+    if (self.completionHandler) {
+        //for some reason, checking permission right away returns denied. need to wait a tiny bit
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            self.completionHandler([self.class getStatus]);
+            self.completionHandler = nil;
+        });
+    }
+}
+
+@end
