@@ -1,4 +1,4 @@
-package com.mainguyen.rnpermissions;
+package com.tkrn.rnpermissions;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

@@ -1,4 +1,4 @@
-package com.mainguyen.rnpermissions;
+package com.tkrn.rnpermissions;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
