@@ -36,6 +36,7 @@
 
 #import "RNPAudioVideo.h"
 #import "RNPPhoto.h"
+#import "RNPNotification.h"
 
 @implementation ReactNativePermissions
 
@@ -105,7 +106,7 @@ RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id
             status = [RNPPhoto getStatus];
             break;
         case RNPTypeNotification:
-          status = [RNPPhoto getStatus];
+          status = [RNPNotification getStatus];
           break;
         default:
             break;
