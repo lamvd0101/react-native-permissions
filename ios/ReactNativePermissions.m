@@ -104,6 +104,9 @@ RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id
         case RNPTypePhoto:
             status = [RNPPhoto getStatus];
             break;
+        case RNPTypeNotification:
+          status = [RNPPhoto getStatus];
+          break;
         default:
             break;
     }

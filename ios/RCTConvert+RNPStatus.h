@@ -18,13 +18,14 @@ static NSString* RNPStatusUndetermined = @"undetermined";
 static NSString* RNPStatusDenied = @"denied";
 static NSString* RNPStatusAuthorized = @"authorized";
 static NSString* RNPStatusRestricted = @"restricted";
-
+static NSString* RNPStatusGranted = @"granted";
 
 typedef NS_ENUM(NSInteger, RNPType) {
     RNPTypeUnknown,
     RNPTypeCamera,
     RNPTypeMicrophone,
-    RNPTypePhoto
+    RNPTypePhoto,
+    RNPTypeNotification,
 };
 
 @interface RCTConvert (RNPStatus)
