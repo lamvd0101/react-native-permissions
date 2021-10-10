@@ -412,4 +412,38 @@ public class RNPermissionsModule extends ReactContextBaseJavaModule implements P
     }
     return (PermissionAwareActivity) activity;
   }
+
+  private boolean isMIUI() {
+    return Build.MANUFACTURER.equals("Xiaomi");
+  }
+
+  @ReactMethod
+  public void openSystemNotificationSetting(final Promise promise) {
+    try {
+      final ReactApplicationContext reactContext = getReactApplicationContext();
+      final String packageName = reactContext.getPackageName();
+      if (isMIUI()) {
+        Intent localIntent = new Intent("android.intent.action.MAIN");
+        localIntent.setClassName(
+          "com.android.settings",
+          "com.android.settings.MiuiSettings"
+        );
+        reactContext.startActivity(localIntent);
+      } else {
+        final Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+          intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+          intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName);
+        } else {
+          intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+          intent.addCategory(Intent.CATEGORY_DEFAULT);
+          intent.setData(Uri.parse("package:" + packageName));
+        }
+        reactContext.startActivity(intent);
+      }
+      promise.resolve(true);
+    } catch (Exception e) {
+      promise.reject(ERROR_INVALID_ACTIVITY, e);
+    }
+  }
 }

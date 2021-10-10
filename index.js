@@ -75,7 +75,10 @@ class ReactNativePermissions {
       : Promise.resolve(false);
   }
 
-  openSettings(): Promise<void> {
+  openSettings(screen): Promise<void> {
+    if(Platform.OS === 'android' && screen === 'notification'){
+      return NativeModule.openSystemNotificationSetting();
+    }
     return NativeModule.openSettings();
   }
 
