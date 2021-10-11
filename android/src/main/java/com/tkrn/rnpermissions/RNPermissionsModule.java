@@ -422,25 +422,28 @@ public class RNPermissionsModule extends ReactContextBaseJavaModule implements P
     try {
       final ReactApplicationContext reactContext = getReactApplicationContext();
       final String packageName = reactContext.getPackageName();
+      Intent intent = new Intent();
+
+      
       if (isMIUI()) {
-        Intent localIntent = new Intent("android.intent.action.MAIN");
-        localIntent.setClassName(
-          "com.android.settings",
-          "com.android.settings.MiuiSettings"
-        );
-        reactContext.startActivity(localIntent);
+        intent = new Intent("android.intent.action.MAIN");
+        intent.setClassName(
+        "com.android.settings",
+        "com.android.settings.MiuiSettings"
+      );
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       } else {
-        final Intent intent = new Intent();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
           intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
           intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName);
         } else {
           intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
           intent.addCategory(Intent.CATEGORY_DEFAULT);
-          intent.setData(Uri.parse("package:" + packageName));
+          intent.setData(Uri.fromParts("package", packageName, null));
         }
-        reactContext.startActivity(intent);
+       
       }
+      reactContext.startActivity(intent);
       promise.resolve(true);
     } catch (Exception e) {
       promise.reject(ERROR_INVALID_ACTIVITY, e);
