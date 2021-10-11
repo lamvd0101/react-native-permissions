@@ -431,7 +431,6 @@ public class RNPermissionsModule extends ReactContextBaseJavaModule implements P
         "com.android.settings",
         "com.android.settings.MiuiSettings"
       );
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       } else {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
           intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
@@ -443,6 +442,7 @@ public class RNPermissionsModule extends ReactContextBaseJavaModule implements P
         }
        
       }
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       reactContext.startActivity(intent);
       promise.resolve(true);
     } catch (Exception e) {
