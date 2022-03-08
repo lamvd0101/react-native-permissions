@@ -11,32 +11,34 @@
 #import "ReactNativePermissions.h"
 
 #if __has_include(<React/RCTBridge.h>)
-  #import <React/RCTBridge.h>
+#import <React/RCTBridge.h>
 #elif __has_include("React/RCTBridge.h")
-  #import "React/RCTBridge.h"
+#import "React/RCTBridge.h"
 #else
-  #import "RCTBridge.h"
+#import "RCTBridge.h"
 #endif
 
 #if __has_include(<React/RCTConvert.h>)
-  #import <React/RCTConvert.h>
+#import <React/RCTConvert.h>
 #elif __has_include("React/RCTConvert.h")
-  #import "React/RCTConvert.h"
+#import "React/RCTConvert.h"
 #else
-  #import "RCTConvert.h"
+#import "RCTConvert.h"
 #endif
 
 #if __has_include(<React/RCTEventDispatcher.h>)
-  #import <React/RCTEventDispatcher.h>
+#import <React/RCTEventDispatcher.h>
 #elif __has_include("React/RCTEventDispatcher.h")
-  #import "React/RCTEventDispatcher.h"
+#import "React/RCTEventDispatcher.h"
 #else
-  #import "RCTEventDispatcher.h"
+#import "RCTEventDispatcher.h"
 #endif
 
 #import "RNPAudioVideo.h"
+#import "RNPContacts.h"
 #import "RNPPhoto.h"
 #import "RNPNotification.h"
+#import "RNPLocation.h"
 
 @implementation ReactNativePermissions
 
@@ -54,7 +56,7 @@ RCT_EXPORT_MODULE();
 {
     if (self = [super init]) {
     }
-
+    
     return self;
 }
 
@@ -75,16 +77,16 @@ RCT_REMAP_METHOD(canOpenSettings, canOpenSettings:(RCTPromiseResolveBlock)resolv
 RCT_EXPORT_METHOD(openSettings:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     if (@(UIApplicationOpenSettingsURLString != nil)) {
-
+        
         NSNotificationCenter * __weak center = [NSNotificationCenter defaultCenter];
         id __block token = [center addObserverForName:UIApplicationDidBecomeActiveNotification
                                                object:nil
                                                 queue:nil
                                            usingBlock:^(NSNotification *note) {
-                                               [center removeObserver:token];
-                                               resolve(@YES);
-                                           }];
-
+            [center removeObserver:token];
+            resolve(@YES);
+        }];
+        
         NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
         [[UIApplication sharedApplication] openURL:url];
     }
@@ -94,7 +96,7 @@ RCT_EXPORT_METHOD(openSettings:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id)json resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString *status;
-
+    
     switch (type) {
         case RNPTypeCamera:
             status = [RNPAudioVideo getStatus:@"video"];
@@ -106,19 +108,25 @@ RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id
             status = [RNPPhoto getStatus];
             break;
         case RNPTypeNotification:
-          status = [RNPNotification getStatus];
-          break;
+            status = [RNPNotification getStatus];
+            break;
+        case RNPTypeContacts:
+            status = [RNPNotification getStatus];
+            break;
+        case RNPTypeLocation:
+            status = [RNPLocation getStatus];
+            break;
         default:
             break;
     }
-
+    
     resolve(status);
 }
 
 RCT_REMAP_METHOD(requestPermission, permissionType:(RNPType)type json:(id)json resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString *status;
-
+    
     switch (type) {
         case RNPTypeCamera:
             return [RNPAudioVideo request:@"video" completionHandler:resolve];
@@ -129,8 +137,8 @@ RCT_REMAP_METHOD(requestPermission, permissionType:(RNPType)type json:(id)json r
         default:
             break;
     }
-
-
+    
+    
 }
 
 @end
