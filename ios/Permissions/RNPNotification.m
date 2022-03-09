@@ -22,9 +22,33 @@ static NSString* RNPDidAskForNotification = @"RNPDidAskForNotification";
     BOOL isEnabled = [[[UIApplication sharedApplication] currentUserNotificationSettings] types] != UIUserNotificationTypeNone;
 
     if (isEnabled) {
-        return RNPStatusGranted;
+        return RNPStatusAuthorized;
     } else {
         return didAskForPermission ? RNPStatusDenied : RNPStatusUndetermined;
+    }
+}
+
+
+- (void)request:(UIUserNotificationType)types completionHandler:(void (^)(NSString*))completionHandler
+{
+    NSString *status = [self.class getStatus];
+
+    if (status == RNPStatusUndetermined) {
+        self.completionHandler = completionHandler;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidBecomeActive)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
+
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:RNPDidAskForNotification];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else {
+        completionHandler(status);
     }
 }
 

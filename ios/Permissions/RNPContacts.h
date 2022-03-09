@@ -11,5 +11,5 @@
 @interface RNPContacts : NSObject
 
 + (NSString *)getStatus;
-
++ (void)request:(void (^)(NSString *))completionHandler;
 @end

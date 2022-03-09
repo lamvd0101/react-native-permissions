@@ -43,4 +43,26 @@
 #endif
 }
 
++ (void)request:(void (^)(NSString *))completionHandler
+{
+    void (^handler)(BOOL, NSError * _Nullable) =  ^(BOOL granted, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler([self.class getStatus]);
+        });
+    };
+    
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_9_0
+    CNContactStore *contactStore = [[CNContactStore alloc] init];
+    [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:handler];
+#else
+    CFErrorRef error = nil;
+    ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, &error);
+    ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
+        NSError *err = (__bridge NSError *)error;
+        handler(granted, err);
+    });
+#endif
+}
+
 @end

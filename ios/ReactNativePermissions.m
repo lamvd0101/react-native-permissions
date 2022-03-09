@@ -111,7 +111,7 @@ RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id
             status = [RNPNotification getStatus];
             break;
         case RNPTypeContacts:
-            status = [RNPNotification getStatus];
+            status = [RNPContacts getStatus];
             break;
         case RNPTypeLocation:
             status = [RNPLocation getStatus];
@@ -134,6 +134,10 @@ RCT_REMAP_METHOD(requestPermission, permissionType:(RNPType)type json:(id)json r
             return [RNPAudioVideo request:@"audio" completionHandler:resolve];
         case RNPTypePhoto:
             return [RNPPhoto request:resolve];
+        case RNPTypeContacts:
+            return [RNPContacts request:resolve];
+        case RNPTypeLocation:
+            return [RNPLocation request:resolve];
         default:
             break;
     }
