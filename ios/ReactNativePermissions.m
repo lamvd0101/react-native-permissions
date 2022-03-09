@@ -11,36 +11,43 @@
 #import "ReactNativePermissions.h"
 
 #if __has_include(<React/RCTBridge.h>)
-#import <React/RCTBridge.h>
+  #import <React/RCTBridge.h>
 #elif __has_include("React/RCTBridge.h")
-#import "React/RCTBridge.h"
+  #import "React/RCTBridge.h"
 #else
-#import "RCTBridge.h"
+  #import "RCTBridge.h"
 #endif
 
 #if __has_include(<React/RCTConvert.h>)
-#import <React/RCTConvert.h>
+  #import <React/RCTConvert.h>
 #elif __has_include("React/RCTConvert.h")
-#import "React/RCTConvert.h"
+  #import "React/RCTConvert.h"
 #else
-#import "RCTConvert.h"
+  #import "RCTConvert.h"
 #endif
 
 #if __has_include(<React/RCTEventDispatcher.h>)
-#import <React/RCTEventDispatcher.h>
+  #import <React/RCTEventDispatcher.h>
 #elif __has_include("React/RCTEventDispatcher.h")
-#import "React/RCTEventDispatcher.h"
+  #import "React/RCTEventDispatcher.h"
 #else
-#import "RCTEventDispatcher.h"
+  #import "RCTEventDispatcher.h"
 #endif
 
+#import "RNPLocation.h"
+#import "RNPNotification.h"
 #import "RNPAudioVideo.h"
 #import "RNPContacts.h"
 #import "RNPPhoto.h"
-#import "RNPNotification.h"
-#import "RNPLocation.h"
+
+
+@interface ReactNativePermissions()
+@property (strong, nonatomic) RNPLocation *locationMgr;
+@property (strong, nonatomic) RNPNotification *notificationMgr;
+@end
 
 @implementation ReactNativePermissions
+
 
 RCT_EXPORT_MODULE();
 @synthesize bridge = _bridge;
@@ -56,7 +63,7 @@ RCT_EXPORT_MODULE();
 {
     if (self = [super init]) {
     }
-    
+
     return self;
 }
 
@@ -77,16 +84,16 @@ RCT_REMAP_METHOD(canOpenSettings, canOpenSettings:(RCTPromiseResolveBlock)resolv
 RCT_EXPORT_METHOD(openSettings:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     if (@(UIApplicationOpenSettingsURLString != nil)) {
-        
+
         NSNotificationCenter * __weak center = [NSNotificationCenter defaultCenter];
         id __block token = [center addObserverForName:UIApplicationDidBecomeActiveNotification
                                                object:nil
                                                 queue:nil
                                            usingBlock:^(NSNotification *note) {
-            [center removeObserver:token];
-            resolve(@YES);
-        }];
-        
+                                               [center removeObserver:token];
+                                               resolve(@YES);
+                                           }];
+
         NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
         [[UIApplication sharedApplication] openURL:url];
     }
@@ -96,8 +103,12 @@ RCT_EXPORT_METHOD(openSettings:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id)json resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString *status;
-    
+
     switch (type) {
+
+        case RNPTypeLocation:
+            status = [RNPLocation getStatus];
+            break;
         case RNPTypeCamera:
             status = [RNPAudioVideo getStatus:@"video"];
             break;
@@ -107,27 +118,26 @@ RCT_REMAP_METHOD(getPermissionStatus, getPermissionStatus:(RNPType)type json:(id
         case RNPTypePhoto:
             status = [RNPPhoto getStatus];
             break;
-        case RNPTypeNotification:
-            status = [RNPNotification getStatus];
-            break;
         case RNPTypeContacts:
             status = [RNPContacts getStatus];
             break;
-        case RNPTypeLocation:
-            status = [RNPLocation getStatus];
+        case RNPTypeNotification:
+            status = [RNPNotification getStatus];
             break;
         default:
             break;
     }
-    
+
     resolve(status);
 }
 
 RCT_REMAP_METHOD(requestPermission, permissionType:(RNPType)type json:(id)json resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString *status;
-    
+
     switch (type) {
+        case RNPTypeLocation:
+            return [self requestLocation:json resolve:resolve];
         case RNPTypeCamera:
             return [RNPAudioVideo request:@"video" completionHandler:resolve];
         case RNPTypeMicrophone:
@@ -136,13 +146,47 @@ RCT_REMAP_METHOD(requestPermission, permissionType:(RNPType)type json:(id)json r
             return [RNPPhoto request:resolve];
         case RNPTypeContacts:
             return [RNPContacts request:resolve];
-        case RNPTypeLocation:
-            return [RNPLocation request:resolve];
+        case RNPTypeNotification:
+            return [self requestNotification:json resolve:resolve];
         default:
             break;
     }
-    
-    
+
+
+}
+
+- (void) requestLocation:(id)json resolve:(RCTPromiseResolveBlock)resolve
+{
+    if (self.locationMgr == nil) {
+        self.locationMgr = [[RNPLocation alloc] init];
+    }
+
+    NSString *type = [RCTConvert NSString:json];
+
+    [self.locationMgr request:type completionHandler:resolve];
+}
+
+- (void) requestNotification:(id)json resolve:(RCTPromiseResolveBlock)resolve
+{
+    NSArray *typeStrings = [RCTConvert NSArray:json];
+
+    UIUserNotificationType types;
+    if ([typeStrings containsObject:@"alert"])
+        types = types | UIUserNotificationTypeAlert;
+
+    if ([typeStrings containsObject:@"badge"])
+        types = types | UIUserNotificationTypeBadge;
+
+    if ([typeStrings containsObject:@"sound"])
+        types = types | UIUserNotificationTypeSound;
+
+
+    if (self.notificationMgr == nil) {
+        self.notificationMgr = [[RNPNotification alloc] init];
+    }
+
+    [self.notificationMgr request:types completionHandler:resolve];
+
 }
 
 @end
