@@ -22,7 +22,7 @@ static NSString* RNPDidAskForNotification = @"RNPDidAskForNotification";
     BOOL isEnabled = [[[UIApplication sharedApplication] currentUserNotificationSettings] types] != UIUserNotificationTypeNone;
 
     if (isEnabled) {
-        return RNPStatusAuthorized;
+        return RNPStatusGranted;
     } else {
         return didAskForPermission ? RNPStatusDenied : RNPStatusUndetermined;
     }
